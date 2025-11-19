@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Details - Airbnb System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="homepage.html">
+                <i class="fas fa-home"></i> Airbnb System
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="properties.html">
+                    <i class="fas fa-arrow-left"></i> Back to Properties
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Property Details -->
+    <div class="container py-5" id="propertyDetails">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-5">
+            <div class="loading-spinner" style="width: 50px; height: 50px; margin: 0 auto;"></div>
+            <p class="mt-3">Loading property details...</p>
+        </div>
+
+        <!-- Property Content (will be populated by JavaScript) -->
+        <div id="propertyContent" style="display: none;">
+            <!-- Content goes here -->
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="text-center py-5" style="display: none;">
+            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+            <h4>Property Not Found</h4>
+            <p class="text-muted">The property you're looking for doesn't exist or has been removed.</p>
+            <a href="properties.html" class="btn btn-primary">Browse Properties</a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Airbnb System</h5>
+                    <p>Your trusted partner for amazing stays and unforgettable experiences.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2024 Airbnb System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        let propertyId;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            propertyId = utils.getQueryParam('id');
+            
+            if (!propertyId) {
+                showError();
+                return;
+            }
+
+            loadPropertyDetails();
+        });
+
+        async function loadPropertyDetails() {
+            try {
+                const property = await api.getPropertyById(propertyId);
+                
+                if (!property) {
+                    showError();
+                    return;
+                }
+
+                displayPropertyDetails(property);
+                
+            } catch (error) {
+                console.error('Error loading property details:', error);
+                showError();
+            }
+        }
+
+        function displayPropertyDetails(property) {
+            const content = document.getElementById('propertyContent');
+            
+            content.innerHTML = `
+                <div class="row">
+                    <div class="col-lg-8">
+                        <!-- Property Images -->
+                        <div class="mb-4">
+                            <img src="${property.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'}" 
+                                 class="img-fluid rounded" alt="${property.title}">
+                        </div>
+
+                        <!-- Property Description -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h2 class="card-title">${property.title}</h2>
+                                <p class="text-muted">
+                                    <i class="fas fa-map-marker-alt"></i> ${property.location}
+                                    ${property.is_popular ? '<span class="badge bg-warning ms-2">Popular Stay</span>' : ''}
+                                </p>
+                                
+                                <div class="property-features mb-4">
+                                    <div class="row text-center">
+                                        <div class="col-3">
+                                            <i class="fas fa-bed fa-2x text-primary mb-2"></i>
+                                            <p><strong>${property.bedrooms}</strong><br>Bedrooms</p>
+                                        </div>
+                                        <div class="col-3">
+                                            <i class="fas fa-bath fa-2x text-primary mb-2"></i>
+                                            <p><strong>${property.bathrooms}</strong><br>Bathrooms</p>
+                                        </div>
+                                        <div class="col-3">
+                                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                                            <p><strong>${property.max_guests}</strong><br>Guests</p>
+                                        </div>
+                                        <div class="col-3">
+                                            <i class="fas fa-home fa-2x text-primary mb-2"></i>
+                                            <p><strong>${property.property_type}</strong><br>Type</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4>About this property</h4>
+                                <p class="card-text">${property.description || 'No description available for this property.'}</p>
+
+                                <!-- Amenities -->
+                                ${property.amenities && JSON.parse(property.amenities).length > 0 ? `
+                                <div class="mt-4">
+                                    <h5>Amenities</h5>
+                                    <div class="row">
+                                        ${JSON.parse(property.amenities).map(amenity => `
+                                            <div class="col-md-6">
+                                                <i class="fas fa-check text-success"></i> ${amenity}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <!-- Booking Card -->
+                        <div class="card sticky-top" style="top: 20px;">
+                            <div class="card-body">
+                                <div class="text-center mb-4">
+                                    <span class="price display-4">${utils.formatCurrency(property.price_per_night)}</span>
+                                    <span class="text-muted">/ night</span>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <a href="reservation.html?propertyId=${property.property_id}" 
+                                       class="btn btn-primary btn-lg">
+                                        <i class="fas fa-calendar-check"></i> Book Now
+                                    </a>
+                                    <a href="properties.html" class="btn btn-outline-primary">
+                                        <i class="fas fa-arrow-left"></i> Back to Properties
+                                    </a>
+                                </div>
+
+                                <hr>
+
+                                <!-- Host Info -->
+                                <div class="host-info">
+                                    <h6>Hosted by</h6>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-circle fa-2x text-muted me-3"></i>
+                                        <div>
+                                            <strong>${property.host_name || 'Unknown Host'}</strong>
+                                            <br>
+                                            <small class="text-muted">${property.host_email || ''}</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Availability Status -->
+                                <div class="mt-3">
+                                    ${property.is_available ? 
+                                        '<span class="badge bg-success"><i class="fas fa-check"></i> Available</span>' : 
+                                        '<span class="badge bg-danger"><i class="fas fa-times"></i> Not Available</span>'
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Similar Properties -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h4>Similar Properties</h4>
+                        <div id="similarProperties" class="row">
+                            <!-- Similar properties will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Hide loading, show content
+            document.getElementById('loadingState').style.display = 'none';
+            content.style.display = 'block';
+
+            // Load similar properties
+            loadSimilarProperties(property.property_type, property.property_id);
+        }
+
+        async function loadSimilarProperties(propertyType, excludeId) {
+            try {
+                const similarProperties = await api.getProperties({
+                    property_type: propertyType,
+                    is_available: true
+                });
+
+                const filteredProperties = similarProperties.filter(p => p.property_id != excludeId).slice(0, 3);
+                const container = document.getElementById('similarProperties');
+
+                if (filteredProperties.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center"><p>No similar properties found.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = filteredProperties.map(property => `
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <img src="${property.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" 
+                                 class="card-img-top property-image" alt="${property.title}">
+                            <div class="card-body">
+                                <h6 class="card-title">${property.title}</h6>
+                                <p class="card-text text-muted small">${property.location}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">${utils.formatCurrency(property.price_per_night)}/night</span>
+                                    <a href="property-details.html?id=${property.property_id}" class="btn btn-sm btn-outline-primary">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading similar properties:', error);
+            }
+        }
+
+        function showError() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

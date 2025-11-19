@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Reservation - Airbnb System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="homepage.html">
+                <i class="fas fa-home"></i> Airbnb System
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="properties.html">
+                    <i class="fas fa-arrow-left"></i> Back to Properties
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Reservation Form -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-calendar-plus"></i> Make Reservation</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Property Summary -->
+                        <div id="propertySummary" class="alert alert-info" style="display: none;">
+                            <!-- Property info will be loaded here -->
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loadingState" class="text-center py-4">
+                            <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto;"></div>
+                            <p class="mt-2">Loading reservation details...</p>
+                        </div>
+
+                        <!-- Reservation Form -->
+                        <form id="reservationForm" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="checkIn" class="form-label">Check-in Date</label>
+                                        <input type="date" class="form-control" id="checkIn" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="checkOut" class="form-label">Check-out Date</label>
+                                        <input type="date" class="form-control" id="checkOut" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="guestsCount" class="form-label">Number of Guests</label>
+                                        <input type="number" class="form-control" id="guestsCount" min="1" value="1" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="totalPrice" class="form-label">Total Price</label>
+                                        <input type="text" class="form-control" id="totalPrice" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="specialRequests" class="form-label">Special Requests (Optional)</label>
+                                <textarea class="form-control" id="specialRequests" rows="3" 
+                                          placeholder="Any special requirements or requests..."></textarea>
+                            </div>
+
+                            <!-- Availability Check -->
+                            <div id="availabilityCheck" class="alert" style="display: none;"></div>
+
+                            <!-- Price Breakdown -->
+                            <div id="priceBreakdown" class="card mb-4" style="display: none;">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Price Breakdown</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="breakdownDetails"></div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg" id="reserveBtn">
+                                    <i class="fas fa-calendar-check"></i> Confirm Reservation
+                                </button>
+                                <a href="properties.html" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
+                            </div>
+                        </form>
+
+                        <!-- Login Required -->
+                        <div id="loginRequired" class="text-center py-5" style="display: none;">
+                            <i class="fas fa-lock fa-3x text-warning mb-3"></i>
+                            <h4>Login Required</h4>
+                            <p class="text-muted">You need to be logged in to make a reservation.</p>
+                            <a href="login.html" class="btn btn-primary">Login</a>
+                            <a href="register.html" class="btn btn-outline-primary">Register</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Airbnb System</h5>
+                    <p>Your trusted partner for amazing stays and unforgettable experiences.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2024 Airbnb System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        let propertyId;
+        let propertyDetails;
+        let pricePerNight = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!utils.isLoggedIn()) {
+                showLoginRequired();
+                return;
+            }
+
+            propertyId = utils.getQueryParam('propertyId');
+            
+            if (!propertyId) {
+                utils.showNotification('No property selected', 'error');
+                window.location.href = 'properties.html';
+                return;
+            }
+
+            loadPropertyDetails();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Date change listeners
+            document.getElementById('checkIn').addEventListener('change', updateReservationDetails);
+            document.getElementById('checkOut').addEventListener('change', updateReservationDetails);
+            document.getElementById('guestsCount').addEventListener('change', updateReservationDetails);
+
+            // Form submission
+            document.getElementById('reservationForm').addEventListener('submit', makeReservation);
+        }
+
+        async function loadPropertyDetails() {
+            try {
+                propertyDetails = await api.getPropertyById(propertyId);
+                pricePerNight = parseFloat(propertyDetails.price_per_night);
+                
+                displayPropertySummary(propertyDetails);
+                showReservationForm();
+                
+                // Set minimum date to today
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('checkIn').min = today;
+                
+            } catch (error) {
+                console.error('Error loading property details:', error);
+                utils.showNotification('Error loading property details', 'error');
+            }
+        }
+
+        function displayPropertySummary(property) {
+            const summary = document.getElementById('propertySummary');
+            summary.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${property.title}</h6>
+                        <p class="mb-1"><i class="fas fa-map-marker-alt"></i> ${property.location}</p>
+                        <p class="mb-0"><strong>${utils.formatCurrency(property.price_per_night)}</strong> per night</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary">${property.property_type}</span>
+                        <br>
+                        <small>Max guests: ${property.max_guests}</small>
+                    </div>
+                </div>
+            `;
+            summary.style.display = 'block';
+        }
+
+        function showReservationForm() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('reservationForm').style.display = 'block';
+        }
+
+        function showLoginRequired() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('loginRequired').style.display = 'block';
+        }
+
+        async function updateReservationDetails() {
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+            const guestsCount = parseInt(document.getElementById('guestsCount').value);
+
+            if (!checkIn || !checkOut) {
+                return;
+            }
+
+            // Validate dates
+            if (new Date(checkOut) <= new Date(checkIn)) {
+                showAvailabilityMessage('Check-out date must be after check-in date.', 'error');
+                return;
+            }
+
+            // Validate guests count
+            if (guestsCount > propertyDetails.max_guests) {
+                showAvailabilityMessage(`Maximum ${propertyDetails.max_guests} guests allowed for this property.`, 'error');
+                return;
+            }
+
+            // Check availability
+            try {
+                const availability = await api.checkAvailability(propertyId, checkIn, checkOut);
+                
+                if (availability.available) {
+                    showAvailabilityMessage('These dates are available!', 'success');
+                    calculateTotalPrice(checkIn, checkOut, guestsCount);
+                } else {
+                    showAvailabilityMessage('Sorry, these dates are not available. Please choose different dates.', 'error');
+                    hidePriceBreakdown();
+                }
+            } catch (error) {
+                console.error('Error checking availability:', error);
+                showAvailabilityMessage('Error checking availability. Please try again.', 'error');
+            }
+        }
+
+        function calculateTotalPrice(checkIn, checkOut, guestsCount) {
+            const nights = utils.calculateDays(checkIn, checkOut);
+            const totalPrice = nights * pricePerNight;
+
+            document.getElementById('totalPrice').value = utils.formatCurrency(totalPrice);
+            
+            showPriceBreakdown(nights, totalPrice);
+        }
+
+        function showPriceBreakdown(nights, totalPrice) {
+            const breakdown = document.getElementById('priceBreakdown');
+            const details = document.getElementById('breakdownDetails');
+            
+            details.innerHTML = `
+                <div class="d-flex justify-content-between">
+                    <span>${utils.formatCurrency(pricePerNight)} × ${nights} nights</span>
+                    <span>${utils.formatCurrency(pricePerNight * nights)}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total</span>
+                    <span>${utils.formatCurrency(totalPrice)}</span>
+                </div>
+            `;
+            
+            breakdown.style.display = 'block';
+        }
+
+        function hidePriceBreakdown() {
+            document.getElementById('priceBreakdown').style.display = 'none';
+            document.getElementById('totalPrice').value = '';
+        }
+
+        function showAvailabilityMessage(message, type) {
+            const availabilityDiv = document.getElementById('availabilityCheck');
+            availabilityDiv.textContent = message;
+            availabilityDiv.className = `alert alert-${type}`;
+            availabilityDiv.style.display = 'block';
+        }
+
+        async function makeReservation(e) {
+            e.preventDefault();
+            
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+            const guestsCount = parseInt(document.getElementById('guestsCount').value);
+            const specialRequests = document.getElementById('specialRequests').value;
+            const totalPrice = parseFloat(document.getElementById('totalPrice').value.replace(/[^0-9.-]+/g, ""));
+
+            if (!checkIn || !checkOut || !totalPrice) {
+                utils.showNotification('Please complete all required fields', 'error');
+                return;
+            }
+
+            const reserveBtn = document.getElementById('reserveBtn');
+            reserveBtn.setAttribute('data-original-text', reserveBtn.innerHTML);
+            utils.setLoading(reserveBtn, true);
+
+            try {
+                const reservationData = {
+                    property_id: propertyId,
+                    check_in: checkIn,
+                    check_out: checkOut,
+                    guests_count: guestsCount,
+                    special_requests: specialRequests
+                };
+
+                const result = await api.createReservation(reservationData);
+                
+                utils.showNotification('Reservation created successfully!', 'success');
+                
+                // Redirect to reservations page
+                setTimeout(() => {
+                    window.location.href = 'reservations.html';
+                }, 2000);
+                
+            } catch (error) {
+                utils.showNotification(error.message, 'error');
+            } finally {
+                utils.setLoading(reserveBtn, false);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties - Airbnb System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="homepage.html">
+                <i class="fas fa-home"></i> Airbnb System
+            </a>
+            
+            <div class="navbar-nav ms-auto auth-links">
+                <a class="nav-link" href="login.html">Login</a>
+                <a class="nav-link" href="register.html">Register</a>
+            </div>
+            
+            <div class="navbar-nav ms-auto user-links" style="display: none;">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i> <span class="user-name"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="homepage.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a class="dropdown-item" href="reservations.html"><i class="fas fa-calendar"></i> My Reservations</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item logout-btn" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Filters -->
+    <section class="bg-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>Find Your Perfect Stay</h2>
+                    <p class="text-muted">Discover amazing properties around the world</p>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="searchLocation" placeholder="Where to?">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" id="propertyType">
+                        <option value="">All Types</option>
+                        <option value="villa">Villa</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="house">House</option>
+                        <option value="condo">Condo</option>
+                        <option value="studio">Studio</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="minPrice" placeholder="Min Price">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" id="maxPrice" placeholder="Max Price">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100" id="searchBtn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Properties Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col">
+                    <h3 id="propertiesCount">Loading properties...</h3>
+                </div>
+                <div class="col-auto">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary active" data-sort="newest">
+                            <i class="fas fa-sort-amount-down"></i> Newest
+                        </button>
+                        <button class="btn btn-outline-primary" data-sort="price-low">
+                            <i class="fas fa-sort-amount-up"></i> Price Low
+                        </button>
+                        <button class="btn btn-outline-primary" data-sort="price-high">
+                            <i class="fas fa-sort-amount-down"></i> Price High
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loadingSpinner" class="text-center py-5">
+                <div class="loading-spinner" style="width: 50px; height: 50px; margin: 0 auto;"></div>
+                <p class="mt-3">Loading properties...</p>
+            </div>
+
+            <div id="propertiesGrid" class="row" style="display: none;">
+                <!-- Properties will be loaded here -->
+            </div>
+
+            <div id="noProperties" class="text-center py-5" style="display: none;">
+                <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                <h4>No properties found</h4>
+                <p class="text-muted">Try adjusting your search filters</p>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-5" id="loadMoreContainer" style="display: none;">
+                <button class="btn btn-outline-primary" id="loadMoreBtn">
+                    <i class="fas fa-plus"></i> Load More Properties
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Airbnb System</h5>
+                    <p>Your trusted partner for amazing stays and unforgettable experiences.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2024 Airbnb System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/properties.js"></script>
+    <script>
+        let allProperties = [];
+        let displayedCount = 0;
+        const propertiesPerPage = 9;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProperties();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Search button
+            document.getElementById('searchBtn').addEventListener('click', loadProperties);
+            
+            // Enter key in search fields
+            ['searchLocation', 'minPrice', 'maxPrice'].forEach(id => {
+                document.getElementById(id).addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') loadProperties();
+                });
+            });
+
+            // Property type change
+            document.getElementById('propertyType').addEventListener('change', loadProperties);
+
+            // Sort buttons
+            document.querySelectorAll('[data-sort]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    sortProperties(this.dataset.sort);
+                });
+            });
+
+            // Load more button
+            document.getElementById('loadMoreBtn').addEventListener('click', loadMoreProperties);
+        }
+
+        async function loadProperties() {
+            const filters = {
+                location: document.getElementById('searchLocation').value,
+                property_type: document.getElementById('propertyType').value,
+                min_price: document.getElementById('minPrice').value,
+                max_price: document.getElementById('maxPrice').value,
+                is_available: true
+            };
+
+            showLoading(true);
+
+            try {
+                allProperties = await api.getProperties(filters);
+                displayedCount = 0;
+                
+                showLoading(false);
+                updatePropertiesCount(allProperties.length);
+                
+                if (allProperties.length === 0) {
+                    showNoProperties();
+                    return;
+                }
+
+                sortProperties('newest'); // Default sort
+                
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                utils.showNotification('Error loading properties', 'error');
+                showLoading(false);
+            }
+        }
+
+        function sortProperties(sortType) {
+            let sortedProperties = [...allProperties];
+            
+            switch(sortType) {
+                case 'price-low':
+                    sortedProperties.sort((a, b) => a.price_per_night - b.price_per_night);
+                    break;
+                case 'price-high':
+                    sortedProperties.sort((a, b) => b.price_per_night - a.price_per_night);
+                    break;
+                case 'newest':
+                default:
+                    sortedProperties.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+            }
+            
+            allProperties = sortedProperties;
+            displayedCount = 0;
+            displayProperties();
+        }
+
+        function displayProperties() {
+            const container = document.getElementById('propertiesGrid');
+            const propertiesToShow = allProperties.slice(displayedCount, displayedCount + propertiesPerPage);
+            
+            if (displayedCount === 0) {
+                container.innerHTML = '';
+            }
+
+            propertiesToShow.forEach(property => {
+                const propertyCard = createPropertyCard(property);
+                container.appendChild(propertyCard);
+            });
+
+            displayedCount += propertiesToShow.length;
+            
+            // Show/hide load more button
+            const loadMoreContainer = document.getElementById('loadMoreContainer');
+            if (displayedCount < allProperties.length) {
+                loadMoreContainer.style.display = 'block';
+            } else {
+                loadMoreContainer.style.display = 'none';
+            }
+
+            container.style.display = 'flex';
+        }
+
+        function createPropertyCard(property) {
+            const col = document.createElement('div');
+            col.className = 'col-md-4 mb-4';
+            
+            col.innerHTML = `
+                <div class="card h-100 property-card">
+                    <img src="${property.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" 
+                         class="card-img-top property-image" alt="${property.title}"
+                         style="height: 200px; object-fit: cover;">
+                    ${property.is_popular ? '<span class="position-absolute top-0 end-0 badge bg-warning m-2">Popular</span>' : ''}
+                    <div class="card-body">
+                        <h5 class="card-title">${property.title}</h5>
+                        <p class="card-text text-muted">
+                            <i class="fas fa-map-marker-alt"></i> ${property.location}
+                        </p>
+                        <p class="card-text">${property.description ? property.description.substring(0, 100) + '...' : 'No description available'}</p>
+                        
+                        <div class="property-features mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-bed"></i> ${property.bedrooms} bed • 
+                                <i class="fas fa-bath"></i> ${property.bathrooms} bath • 
+                                <i class="fas fa-users"></i> ${property.max_guests} guests
+                            </small>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="price h5">${utils.formatCurrency(property.price_per_night)}</span>
+                                <small class="text-muted">/night</small>
+                            </div>
+                            <span class="badge bg-primary">${property.property_type}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-grid gap-2">
+                            <a href="reservation.html?propertyId=${property.property_id}" class="btn btn-primary">
+                                <i class="fas fa-calendar-plus"></i> Book Now
+                            </a>
+                            <a href="property-details.html?id=${property.property_id}" class="btn btn-outline-primary">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+
+        function loadMoreProperties() {
+            displayProperties();
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
+            document.getElementById('propertiesGrid').style.display = show ? 'none' : 'flex';
+            document.getElementById('noProperties').style.display = 'none';
+            document.getElementById('loadMoreContainer').style.display = 'none';
+        }
+
+        function showNoProperties() {
+            document.getElementById('propertiesGrid').style.display = 'none';
+            document.getElementById('noProperties').style.display = 'block';
+            document.getElementById('loadMoreContainer').style.display = 'none';
+        }
+
+        function updatePropertiesCount(count) {
+            const countElement = document.getElementById('propertiesCount');
+            countElement.textContent = `${count} ${count === 1 ? 'property' : 'properties'} found`;
+        }
+    </script>
+</body>
+</html>

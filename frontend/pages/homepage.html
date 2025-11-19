@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Airbnb System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="homepage.html">
+                <i class="fas fa-home"></i> Airbnb System
+            </a>
+            
+            <div class="navbar-nav ms-auto auth-links">
+                <a class="nav-link" href="login.html">Login</a>
+                <a class="nav-link" href="register.html">Register</a>
+            </div>
+            
+            <div class="navbar-nav ms-auto user-links" style="display: none;">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i> <span class="user-name"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="reservations.html"><i class="fas fa-calendar"></i> My Reservations</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item logout-btn" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header bg-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold">Welcome back, <span id="userGreeting">Guest</span>! 👋</h1>
+                    <p class="lead">Ready to discover your next amazing stay?</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="properties.html" class="btn btn-light btn-lg">
+                        <i class="fas fa-search"></i> Browse Properties
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                            <h4>Find Stays</h4>
+                            <p>Discover amazing villas, apartments, and unique accommodations</p>
+                            <a href="properties.html" class="btn btn-primary">Browse All</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                            <h4>My Bookings</h4>
+                            <p>Manage your upcoming stays and reservation history</p>
+                            <a href="reservations.html" class="btn btn-success">View Reservations</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-star fa-3x text-warning mb-3"></i>
+                            <h4>Popular Stays</h4>
+                            <p>Check out our most loved properties with breathtaking views</p>
+                            <a href="properties.html?popular=true" class="btn btn-warning">Explore</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Properties -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2>Featured Properties</h2>
+                    <p>Handpicked stays for an unforgettable experience</p>
+                </div>
+                <div class="col-auto">
+                    <a href="properties.html" class="btn btn-outline-primary">View All</a>
+                </div>
+            </div>
+            <div id="featuredProperties" class="row">
+                <!-- Properties will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- User Stats (for logged-in users) -->
+    <section class="py-5" id="userStatsSection" style="display: none;">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2>Your Activity</h2>
+                </div>
+            </div>
+            <div class="row" id="userStats">
+                <!-- User stats will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Airbnb System</h5>
+                    <p>Your trusted partner for amazing stays and unforgettable experiences.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2024 Airbnb System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!utils.isLoggedIn()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = utils.getUser();
+            document.getElementById('userGreeting').textContent = user.first_name || user.username;
+            
+            loadFeaturedProperties();
+            loadUserStats();
+        });
+
+        async function loadFeaturedProperties() {
+            try {
+                const properties = await api.getProperties({ is_available: true });
+                const container = document.getElementById('featuredProperties');
+                
+                if (properties.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center"><p>No properties available at the moment.</p></div>';
+                    return;
+                }
+
+                // Show first 6 properties
+                container.innerHTML = properties.slice(0, 6).map(property => `
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="${property.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" 
+                                 class="card-img-top property-image" alt="${property.title}">
+                            <div class="card-body">
+                                <h5 class="card-title">${property.title}</h5>
+                                <p class="card-text text-muted">${property.location}</p>
+                                <p class="card-text">${property.description?.substring(0, 100)}...</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">${utils.formatCurrency(property.price_per_night)}/night</span>
+                                    <span class="badge bg-primary">${property.property_type}</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="reservation.html?propertyId=${property.property_id}" class="btn btn-primary btn-sm">Book Now</a>
+                                <a href="property-details.html?id=${property.property_id}" class="btn btn-outline-primary btn-sm">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                document.getElementById('featuredProperties').innerHTML = 
+                    '<div class="col-12 text-center"><p>Error loading properties.</p></div>';
+            }
+        }
+
+        async function loadUserStats() {
+            try {
+                const reservations = await api.getUserReservations();
+                const statsSection = document.getElementById('userStatsSection');
+                const statsContainer = document.getElementById('userStats');
+                
+                if (reservations.length > 0) {
+                    statsSection.style.display = 'block';
+                    
+                    const upcoming = reservations.filter(r => 
+                        new Date(r.check_in) > new Date() && r.status === 'confirmed'
+                    ).length;
+                    
+                    const completed = reservations.filter(r => 
+                        r.status === 'completed'
+                    ).length;
+                    
+                    statsContainer.innerHTML = `
+                        <div class="col-md-3 text-center">
+                            <div class="stat-card">
+                                <h3 class="text-primary">${reservations.length}</h3>
+                                <p>Total Reservations</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-card">
+                                <h3 class="text-success">${upcoming}</h3>
+                                <p>Upcoming Stays</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-card">
+                                <h3 class="text-warning">${completed}</h3>
+                                <p>Completed Trips</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-card">
+                                <h3 class="text-info">${reservations.filter(r => r.status === 'pending').length}</h3>
+                                <p>Pending</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+            }
+        }
+    </script>
+</body>
+</html>

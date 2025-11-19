@@ -1,0 +1,161 @@
+.auth-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.auth-header h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.auth-body {
+    padding: 30px;
+}
+
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+
+.auth-form label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--dark-color);
+}
+
+.auth-form .form-control {
+    padding: 12px 15px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.auth-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 90, 95, 0.25);
+}
+
+.auth-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    background: #e04e52;
+    transform: translateY(-2px);
+}
+
+.auth-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.auth-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+.otp-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.otp-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+}
+
+.otp-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.resend-otp {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.resend-otp button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.resend-otp button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.step {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e1e1e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+    font-weight: bold;
+    color: #666;
+}
+
+.step.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.step.completed {
+    background: var(--secondary-color);
+    color: white;
+}

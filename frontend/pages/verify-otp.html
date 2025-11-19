@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - Airbnb System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/auth.css" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2><i class="fas fa-envelope"></i> Verify Email</h2>
+                <p>Enter the OTP sent to your email</p>
+            </div>
+            <div class="auth-body">
+                <div class="step-indicator">
+                    <div class="step completed">1</div>
+                    <div class="step active">2</div>
+                </div>
+
+                <form class="auth-form" id="otpForm">
+                    <div class="form-group text-center">
+                        <p>We've sent a 6-digit verification code to:<br>
+                        <strong id="userEmail"></strong></p>
+                    </div>
+                    
+                    <div class="otp-container">
+                        <input type="text" class="otp-input" maxlength="1" data-index="1" autocomplete="off">
+                        <input type="text" class="otp-input" maxlength="1" data-index="2" autocomplete="off">
+                        <input type="text" class="otp-input" maxlength="1" data-index="3" autocomplete="off">
+                        <input type="text" class="otp-input" maxlength="1" data-index="4" autocomplete="off">
+                        <input type="text" class="otp-input" maxlength="1" data-index="5" autocomplete="off">
+                        <input type="text" class="otp-input" maxlength="1" data-index="6" autocomplete="off">
+                    </div>
+
+                    <input type="hidden" id="otpCode">
+
+                    <button type="submit" class="auth-btn" id="verifyBtn" disabled>
+                        Verify OTP
+                    </button>
+
+                    <div class="resend-otp">
+                        <p>Didn't receive the code? <br>
+                        <button type="button" id="resendBtn">Resend OTP</button>
+                        <span id="countdown"></span></p>
+                    </div>
+
+                    <div class="auth-link">
+                        <a href="register.html">← Back to Registration</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        let userId, userEmail;
+        let canResend = false;
+        let countdown = 60;
+
+        // Get parameters from URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            userId = urlParams.get('userId');
+            userEmail = urlParams.get('email');
+
+            if (!userId || !userEmail) {
+                utils.showNotification('Invalid verification link', 'error');
+                setTimeout(() => window.location.href = 'register.html', 2000);
+                return;
+            }
+
+            document.getElementById('userEmail').textContent = userEmail;
+            startCountdown();
+            setupOTPInputs();
+        });
+
+        function setupOTPInputs() {
+            const inputs = document.querySelectorAll('.otp-input');
+            
+            inputs.forEach((input, index) => {
+                // Handle input
+                input.addEventListener('input', function(e) {
+                    if (this.value.length === 1) {
+                        // Move to next input
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                    }
+                    
+                    // Combine all OTP digits
+                    const otpCode = Array.from(inputs).map(input => input.value).join('');
+                    document.getElementById('otpCode').value = otpCode;
+                    
+                    // Enable verify button if OTP is complete
+                    document.getElementById('verifyBtn').disabled = otpCode.length !== 6;
+                });
+
+                // Handle backspace
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+
+                // Handle paste
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text').slice(0, 6);
+                    const digits = pastedData.split('');
+                    
+                    digits.forEach((digit, digitIndex) => {
+                        if (inputs[index + digitIndex]) {
+                            inputs[index + digitIndex].value = digit;
+                        }
+                    });
+                    
+                    // Trigger input event
+                    const event = new Event('input');
+                    inputs[Math.min(index + 5, inputs.length - 1)].dispatchEvent(event);
+                });
+            });
+        }
+
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            const resendBtn = document.getElementById('resendBtn');
+            
+            resendBtn.disabled = true;
+            
+            const timer = setInterval(() => {
+                countdownElement.textContent = ` (${countdown}s)`;
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(timer);
+                    resendBtn.disabled = false;
+                    countdownElement.textContent = '';
+                    canResend = true;
+                }
+            }, 1000);
+        }
+
+        // Verify OTP
+        document.getElementById('otpForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const otpCode = document.getElementById('otpCode').value;
+            const verifyBtn = document.getElementById('verifyBtn');
+            
+            verifyBtn.setAttribute('data-original-text', verifyBtn.innerHTML);
+            utils.setLoading(verifyBtn, true);
+            
+            try {
+                await api.verifyOTP({ userId, otpCode });
+                
+                utils.showNotification('Email verified successfully! You can now login.', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                
+            } catch (error) {
+                utils.showNotification(error.message, 'error');
+            } finally {
+                utils.setLoading(verifyBtn, false);
+            }
+        });
+
+        // Resend OTP
+        document.getElementById('resendBtn').addEventListener('click', async function() {
+            if (!canResend) return;
+            
+            const resendBtn = this;
+            resendBtn.disabled = true;
+            canResend = false;
+            countdown = 60;
+            
+            try {
+                await api.resendOTP({ userId, email: userEmail });
+                utils.showNotification('OTP sent successfully!', 'success');
+                startCountdown();
+                
+                // Clear previous OTP inputs
+                document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+                document.getElementById('verifyBtn').disabled = true;
+                
+            } catch (error) {
+                utils.showNotification(error.message, 'error');
+                resendBtn.disabled = false;
+                canResend = true;
+            }
+        });
+    </script>
+</body>
+</html>

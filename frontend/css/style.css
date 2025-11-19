@@ -1,0 +1,134 @@
+:root {
+    --primary-color: #ff5a5f;
+    --secondary-color: #00a699;
+    --dark-color: #484848;
+    --light-color: #f7f7f7;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 100px 0;
+}
+
+.min-vh-80 {
+    min-height: 80vh;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #e04e52;
+    border-color: #e04e52;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.feature-icon {
+    margin-bottom: 1rem;
+}
+
+.property-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.rating {
+    color: #ffc107;
+}
+
+.price {
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.amenities-list {
+    list-style: none;
+    padding: 0;
+}
+
+.amenities-list li {
+    padding: 5px 0;
+}
+
+.amenities-list li i {
+    color: var(--secondary-color);
+    margin-right: 8px;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 90, 95, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 60px 0;
+        text-align: center;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+}

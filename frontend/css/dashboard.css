@@ -1,0 +1,126 @@
+/* Dashboard background image */
+.dashboard-background {
+    background-image: url('../assets/images/dashboard/background.jpg');
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.5;
+    /* Adjust for desired transparency */
+    z-index: -1;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.stat-card {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    color: #666;
+    font-weight: 500;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+    border-radius: 15px 15px 0 0;
+}
+
+.card-footer {
+    background: white;
+    border-top: 1px solid #eee;
+    border-radius: 0 0 15px 15px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.user-links .dropdown-toggle {
+    color: white !important;
+}
+
+.quick-action-card {
+    border: none;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-3px);
+}
+
+.property-card {
+    height: 100%;
+}
+
+.property-card .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.property-card .card-text {
+    flex-grow: 1;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-header {
+        text-align: center;
+        padding: 40px 0;
+    }
+
+    .display-5 {
+        font-size: 2rem;
+    }
+
+    .stat-card {
+        margin-bottom: 20px;
+    }
+}
