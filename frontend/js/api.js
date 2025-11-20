@@ -70,18 +70,17 @@ const api = {
     // Property endpoints
     async getProperties(filters = {}) {
         const queryParams = new URLSearchParams(filters).toString();
+        let response = null;
         try {
-            const response = await this.request(`/properties?${queryParams}`);
-            // If backend returns empty or few results, use sample data with real images
-            if (!response || response.length < 5) {
-                console.log('Using sample properties data');
-                return this.getSampleProperties(filters);
-            }
-            return response;
+            response = await this.request(`/properties?${queryParams}`);
         } catch (error) {
             console.log('Backend unavailable, using sample properties');
+        }
+        // If backend returns empty, few results, or failed, use sample data
+        if (!response || !Array.isArray(response) || response.length < 1) {
             return this.getSampleProperties(filters);
         }
+        return response;
     },
 
     getSampleProperties(filters = {}) {
@@ -89,221 +88,203 @@ const api = {
         const sampleProperties = [
             {
                 property_id: 1,
-                title: "Luxury Beachfront Villa",
-                location: "Miami Beach, FL",
-                description: "Stunning beachfront villa with private pool and ocean views. Perfect for family vacations or romantic getaways.",
-                price_per_night: 299.99,
+                title: "Oceanfront Paradise Villa",
+                location: "Maldives Beach, Maldives",
+                description: "Luxury beachfront villa with private beach access, stunning ocean views, and premium amenities. Perfect for romantic getaways and family vacations.",
+                price_per_night: 599.99,
                 property_type: "villa",
                 bedrooms: 3,
-                bathrooms: 2.5,
+                bathrooms: 2,
                 max_guests: 6,
-                image_url: "../assets/images/properties/beach-villa-1.jpg",
+                image_url: "../assets/images/beaches/beach 1.jpg",
                 is_popular: true,
                 is_available: true,
                 created_at: "2024-01-15",
-                amenities: '["WiFi", "Pool", "Air Conditioning", "Beach Access", "Kitchen"]'
+                highlights: ["Private Beach Access", "Infinity Pool", "Ocean Views", "Luxury Amenities"]
             },
             {
                 property_id: 2,
-                title: "Cozy Downtown Apartment",
-                location: "New York, NY",
-                description: "Modern apartment in the heart of Manhattan with stunning city views and easy access to attractions.",
-                price_per_night: 149.99,
+                title: "Sunset Bay Luxury Condo",
+                location: "Santa Monica, California",
+                description: "Stunning sunset views from this premium condo with yacht club access. Perfect for evening relaxation and coastal living.",
+                price_per_night: 389.99,
+                property_type: "condo",
+                bedrooms: 2,
+                bathrooms: 2,
+                max_guests: 4,
+                image_url: "../assets/images/beaches/beach 2 .jpg",
+                is_popular: true,
+                is_available: true,
+                created_at: "2024-01-20",
+                highlights: ["Sunset Views", "Yacht Club Access", "Coastal Living", "Premium Location"]
+            },
+            {
+                property_id: 3,
+                title: "Riverside Retreat House",
+                location: "Aspen, Colorado",
+                description: "Beautiful riverside property with stunning midday views. Perfect for nature lovers and peaceful getaways.",
+                price_per_night: 329.99,
+                property_type: "house",
+                bedrooms: 3,
+                bathrooms: 2,
+                max_guests: 6,
+                image_url: "../assets/images/beaches/beach 3 sideview.jpg",
+                is_popular: false,
+                is_available: true,
+                created_at: "2024-01-10",
+                highlights: ["Riverside Location", "Nature Views", "Peaceful Setting", "Mountain Access"]
+            },
+            {
+                property_id: 4,
+                title: "Modern Riverside Apartment",
+                location: "Aspen, Colorado",
+                description: "Contemporary apartment with front-facing river views. Modern amenities in a serene natural setting.",
+                price_per_night: 279.99,
+                property_type: "apartment",
+                bedrooms: 2,
+                bathrooms: 1,
+                max_guests: 4,
+                image_url: "../assets/images/beaches/beach 3.jpg",
+                is_popular: true,
+                is_available: true,
+                created_at: "2024-01-25",
+                highlights: ["Modern Design", "River Views", "Serene Location", "Updated Amenities"]
+            },
+            {
+                property_id: 5,
+                title: "Night Harbor Luxury Condo",
+                location: "Miami Beach, Florida",
+                description: "Exclusive waterfront condo with night harbor views. Perfect for entertaining and enjoying the vibrant nightlife.",
+                price_per_night: 459.99,
+                property_type: "condo",
+                bedrooms: 2,
+                bathrooms: 2,
+                max_guests: 4,
+                image_url: "../assets/images/beaches/beach 4.jpg",
+                is_popular: true,
+                is_available: true,
+                created_at: "2024-01-18",
+                highlights: ["Harbor Views", "Nightlife Access", "Entertainment Ready", "Waterfront"]
+            },
+            {
+                property_id: 6,
+                title: "Tropical Bungalow Retreat",
+                location: "Bali, Indonesia",
+                description: "Charming bungalow with beautiful resting areas and tropical surroundings. Perfect for relaxation and meditation.",
+                price_per_night: 199.99,
+                property_type: "bungalow",
+                bedrooms: 1,
+                bathrooms: 1,
+                max_guests: 2,
+                image_url: "../assets/images/beaches/beach bungalow 1.jpg",
+                is_popular: false,
+                is_available: true,
+                created_at: "2024-01-30",
+                highlights: ["Tropical Setting", "Relaxation Focus", "Meditation Space", "Affordable Luxury"]
+            },
+            {
+                property_id: 7,
+                title: "Beach Club Luxury Villa",
+                location: "Cancun, Mexico",
+                description: "Premium beach club villa with exclusive amenities and stunning oceanfront location. Perfect for luxury vacations.",
+                price_per_night: 699.99,
+                property_type: "villa",
+                bedrooms: 4,
+                bathrooms: 3,
+                max_guests: 8,
+                image_url: "assets/images/beaches/beach 1.jpg",
+                is_popular: true,
+                is_available: true,
+                created_at: "2024-01-05",
+                highlights: ["Beach Club Access", "Luxury Amenities", "Oceanfront", "Family Friendly"]
+            },
+            {
+                property_id: 8,
+                title: "Sunset View Apartment",
+                location: "Malibu, California",
+                description: "Beautiful apartment with panoramic sunset views over the Pacific Ocean. Ideal for romantic evenings.",
+                price_per_night: 429.99,
                 property_type: "apartment",
                 bedrooms: 1,
                 bathrooms: 1,
                 max_guests: 2,
-                image_url: "../assets/images/skyscrapers/apartment-1.jpg",
+                image_url: "assets/images/beaches/beach 2 .jpg",
                 is_popular: true,
                 is_available: true,
-                created_at: "2024-01-20",
-                amenities: '["WiFi", "Air Conditioning", "Kitchen", "Elevator", "City View"]'
+                created_at: "2024-01-22",
+                highlights: ["Panoramic Views", "Romantic Setting", "Pacific Ocean", "Sunset Spot"]
             },
             {
-                property_id: 3,
-                title: "Mountain View Cabin",
-                location: "Aspen, CO",
-                description: "Rustic cabin with modern amenities, perfect for ski trips or summer mountain escapes.",
-                price_per_night: 199.99,
-                property_type: "cabin",
+                property_id: 9,
+                title: "Mountain River House",
+                location: "Swiss Alps, Switzerland",
+                description: "Charming house nestled by a mountain river with breathtaking natural scenery. Perfect for outdoor enthusiasts.",
+                price_per_night: 359.99,
+                property_type: "house",
                 bedrooms: 2,
                 bathrooms: 1,
                 max_guests: 4,
-                image_url: "../assets/images/properties/cabin-1.jpg",
+                image_url: "assets/images/beaches/beach 3 sideview.jpg",
                 is_popular: false,
                 is_available: true,
-                created_at: "2024-01-10",
-                amenities: '["WiFi", "Fireplace", "Mountain View", "Parking", "Kitchen"]'
+                created_at: "2024-01-08",
+                highlights: ["Mountain Location", "River Access", "Outdoor Activities", "Natural Scenery"]
             },
             {
-                property_id: 4,
-                title: "Modern City Studio",
-                location: "Chicago, IL",
-                description: "Bright and modern studio apartment in downtown Chicago with all essential amenities.",
-                price_per_night: 89.99,
+                property_id: 10,
+                title: "Contemporary River Studio",
+                location: "Aspen, Colorado",
+                description: "Modern studio apartment with direct river access and contemporary design. Perfect for solo travelers or couples.",
+                price_per_night: 219.99,
                 property_type: "studio",
                 bedrooms: 1,
                 bathrooms: 1,
                 max_guests: 2,
-                image_url: "../assets/images/cities/chicago-studio.jpg",
+                image_url: "assets/images/beaches/beach 3.jpg",
                 is_popular: false,
                 is_available: true,
-                created_at: "2024-01-25",
-                amenities: '["WiFi", "Air Conditioning", "Kitchenette", "Elevator", "City View"]'
+                created_at: "2024-01-28",
+                highlights: ["Contemporary Design", "River Access", "Modern Amenities", "Solo Traveler Friendly"]
             },
             {
-                property_id: 5,
-                title: "Seaside Bungalow",
-                location: "San Diego, CA",
-                description: "Charming bungalow just steps from the beach with private patio and ocean breezes.",
-                price_per_night: 179.99,
-                property_type: "house",
-                bedrooms: 2,
-                bathrooms: 1,
-                max_guests: 4,
-                image_url: "../assets/images/beaches/beach-bungalow.jpg",
-                is_popular: true,
-                is_available: true,
-                created_at: "2024-01-18",
-                amenities: '["WiFi", "Beach Access", "Patio", "Parking", "Kitchen"]'
-            },
-            {
-                property_id: 6,
-                title: "Luxury Penthouse",
-                location: "Los Angeles, CA",
-                description: "Stunning penthouse with panoramic city views, rooftop pool, and luxury amenities.",
-                price_per_night: 499.99,
+                property_id: 11,
+                title: "Harbor Night Luxury Apartment",
+                location: "Monaco, French Riviera",
+                description: "Luxurious apartment overlooking the famous Monaco harbor. Perfect for experiencing the high-life.",
+                price_per_night: 799.99,
                 property_type: "apartment",
-                bedrooms: 3,
+                bedrooms: 2,
                 bathrooms: 2,
-                max_guests: 6,
-                image_url: "../assets/images/skyscrapers/penthouse.jpg",
+                max_guests: 4,
+                image_url: "assets/images/beaches/beach 4.jpg",
                 is_popular: true,
                 is_available: true,
-                created_at: "2024-01-05",
-                amenities: '["WiFi", "Pool", "Gym", "Air Conditioning", "Luxury"]'
+                created_at: "2024-01-12",
+                highlights: ["Harbor Views", "Luxury Living", "Prime Location", "Entertainment Hub"]
             },
             {
-                property_id: 7,
-                title: "Countryside Retreat",
-                location: "Napa Valley, CA",
-                description: "Peaceful countryside home surrounded by vineyards, perfect for wine country getaways.",
-                price_per_night: 229.99,
-                property_type: "house",
-                bedrooms: 3,
-                bathrooms: 2,
-                max_guests: 6,
-                image_url: "../assets/images/countryside/retreat.jpg",
-                is_popular: false,
-                is_available: true,
-                created_at: "2024-01-22",
-                amenities: '["WiFi", "Vineyard View", "Patio", "Parking", "Kitchen"]'
-            },
-            {
-                property_id: 8,
-                title: "Urban Loft",
-                location: "Seattle, WA",
-                description: "Industrial-style loft in trendy neighborhood with exposed brick and high ceilings.",
-                price_per_night: 129.99,
-                property_type: "loft",
+                property_id: 12,
+                title: "Island Bungalow Escape",
+                location: "Phuket, Thailand",
+                description: "Traditional Thai bungalow with modern comforts in a tropical paradise. Perfect for cultural immersion.",
+                price_per_night: 149.99,
+                property_type: "bungalow",
                 bedrooms: 1,
                 bathrooms: 1,
                 max_guests: 2,
-                image_url: "../assets/images/cities/seattle-loft.jpg",
+                image_url: "assets/images/beaches/beach bungalow 1.jpg",
                 is_popular: false,
                 is_available: true,
-                created_at: "2024-01-30",
-                amenities: '["WiFi", "Industrial Design", "City View", "Kitchen", "Unique"]'
-            },
-            {
-                property_id: 9,
-                title: "Beach House Paradise",
-                location: "Maui, HI",
-                description: "Beautiful beach house with direct beach access, tropical garden, and ocean views.",
-                price_per_night: 349.99,
-                property_type: "house",
-                bedrooms: 4,
-                bathrooms: 3,
-                max_guests: 8,
-                image_url: "../assets/images/beaches/hawaii-beach-house.jpg",
-                is_popular: true,
-                is_available: true,
-                created_at: "2024-01-08",
-                amenities: '["WiFi", "Beach Access", "Garden", "Pool", "Luxury"]'
+                created_at: "2024-01-17",
+                highlights: ["Traditional Design", "Cultural Experience", "Tropical Paradise", "Affordable Escape"]
             }
-        ];
-
-        // Apply filters to sample data
-        let filtered = sampleProperties;
-        if (filters.property_type) {
-            filtered = filtered.filter(p => p.property_type === filters.property_type);
-        }
-        if (filters.location) {
-            const locationLower = filters.location.toLowerCase();
-            filtered = filtered.filter(p => p.location.toLowerCase().includes(locationLower));
-        }
-        if (filters.min_price) {
-            filtered = filtered.filter(p => p.price_per_night >= parseFloat(filters.min_price));
-        }
-        if (filters.max_price) {
-            filtered = filtered.filter(p => p.price_per_night <= parseFloat(filters.max_price));
-        }
-        return filtered;
-    },
-
-    async getPropertyById(id) {
-        return this.request(`/properties/${id}`);
-    },
-
-    async getPopularStays() {
-        return this.request('/properties/popular');
-    },
-
-    async checkAvailability(propertyId, checkIn, checkOut) {
-        return this.request(`/properties/${propertyId}/availability?check_in=${checkIn}&check_out=${checkOut}`);
-    },
-
-    async createProperty(propertyData) {
-        return this.request('/properties', {
-            method: 'POST',
-            body: JSON.stringify(propertyData)
-        });
-    },
-
-    // Reservation endpoints
-    async createReservation(reservationData) {
-        return this.request('/reservations', {
-            method: 'POST',
-            body: JSON.stringify(reservationData)
-        });
-    },
-
-    async getUserReservations() {
-        return this.request('/reservations');
-    },
-
-    async getReservationById(id) {
-        return this.request(`/reservations/${id}`);
-    },
-
-    async calculatePrice(priceData) {
-        return this.request('/reservations/calculate-price', {
-            method: 'POST',
-            body: JSON.stringify(priceData)
-        });
-    },
-
-    async updateReservationStatus(id, status) {
-        return this.request(`/reservations/${id}/status`, {
-            method: 'PUT',
-            body: JSON.stringify({ status })
-        });
-    }
-};
+        ]; // <-- Close the sampleProperties array
+    }, // <-- Close getSampleProperties method
+}; // <-- Close the api object
 
 // Error handling for API calls
 window.addEventListener('unhandledrejection', event => {
-    if (event.reason.message.includes('Failed to fetch')) {
+    if (event.reason.message && event.reason.message.includes('Failed to fetch')) {
         utils.showNotification('Unable to connect to server. Please check if the backend is running.', 'error');
     }
 });

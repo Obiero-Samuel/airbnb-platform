@@ -1,3 +1,34 @@
+/* Spinner centering and sizing for properties.html */
+.spinner-centered {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #124071;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.d-none {
+    display: none !important;
+}
+
 :root {
     --primary-color: #ff5a5f;
     --secondary-color: #00a699;
@@ -39,12 +70,12 @@ body {
 .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 .feature-icon {
@@ -92,8 +123,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .alert {
@@ -127,7 +163,7 @@ body {
         padding: 60px 0;
         text-align: center;
     }
-    
+
     .display-4 {
         font-size: 2rem;
     }
