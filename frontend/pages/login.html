@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/auth.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
@@ -22,7 +24,7 @@
                         <label for="email">Email Address</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="password" name="password" required>
@@ -49,34 +51,34 @@
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const loginBtn = document.getElementById('loginBtn');
-            
+
             // Save original button text
             loginBtn.setAttribute('data-original-text', loginBtn.innerHTML);
             utils.setLoading(loginBtn, true);
-            
+
             try {
                 const result = await api.login({ email, password });
-                
+
                 // Store token and user data
                 localStorage.setItem('token', result.token);
                 localStorage.setItem('user', JSON.stringify(result.user));
-                
+
                 utils.showNotification('Login successful!', 'success');
-                
+
                 // Redirect to homepage
                 setTimeout(() => {
                     window.location.href = 'homepage.html';
                 }, 1000);
-                
+
             } catch (error) {
                 utils.showNotification(error.message, 'error');
-                
+
                 // Handle unverified email
                 if (error.message.includes('verify your email')) {
                     const errorData = JSON.parse(error.message.replace('Error: ', ''));
@@ -92,4 +94,5 @@
         });
     </script>
 </body>
+
 </html>

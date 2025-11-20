@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/auth.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
@@ -32,25 +34,26 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" class="form-control" id="username" name="username" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
                         <input type="tel" class="form-control" id="phone" name="phone">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                        <input type="password" class="form-control" id="password" name="password" required
+                            minlength="6">
                         <small class="form-text text-muted">Password must be at least 6 characters long</small>
                     </div>
 
@@ -74,9 +77,9 @@
     <script src="../js/utils.js"></script>
     <script src="../js/api.js"></script>
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const formData = {
                 first_name: document.getElementById('first_name').value,
                 last_name: document.getElementById('last_name').value,
@@ -85,21 +88,21 @@
                 phone: document.getElementById('phone').value,
                 password: document.getElementById('password').value
             };
-            
+
             const registerBtn = document.getElementById('registerBtn');
             registerBtn.setAttribute('data-original-text', registerBtn.innerHTML);
             utils.setLoading(registerBtn, true);
-            
+
             try {
                 const result = await api.register(formData);
-                
+
                 utils.showNotification('Registration successful! Please check your email for OTP.', 'success');
-                
+
                 // Redirect to OTP verification
                 setTimeout(() => {
                     window.location.href = `verify-otp.html?userId=${result.userId}&email=${formData.email}`;
                 }, 2000);
-                
+
             } catch (error) {
                 utils.showNotification(error.message, 'error');
             } finally {
@@ -108,7 +111,7 @@
         });
 
         // Real-time validation
-        document.getElementById('email').addEventListener('blur', function() {
+        document.getElementById('email').addEventListener('blur', function () {
             if (!utils.isValidEmail(this.value)) {
                 this.classList.add('is-invalid');
             } else {
@@ -116,7 +119,7 @@
             }
         });
 
-        document.getElementById('password').addEventListener('input', function() {
+        document.getElementById('password').addEventListener('input', function () {
             if (this.value.length < 6) {
                 this.classList.add('is-invalid');
             } else {
@@ -125,4 +128,5 @@
         });
     </script>
 </body>
+
 </html>
