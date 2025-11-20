@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/dashboard.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -16,12 +18,12 @@
             <a class="navbar-brand" href="homepage.html">
                 <i class="fas fa-home"></i> Airbnb System
             </a>
-            
+
             <div class="navbar-nav ms-auto auth-links">
                 <a class="nav-link" href="login.html">Login</a>
                 <a class="nav-link" href="register.html">Register</a>
             </div>
-            
+
             <div class="navbar-nav ms-auto user-links" style="display: none;">
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -29,9 +31,13 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-                        <li><a class="dropdown-item" href="reservations.html"><i class="fas fa-calendar"></i> My Reservations</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item logout-btn" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a class="dropdown-item" href="reservations.html"><i class="fas fa-calendar"></i> My
+                                Reservations</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item logout-btn" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -143,7 +149,7 @@
     <script src="../js/utils.js"></script>
     <script src="../js/api.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Check authentication
             if (!utils.isLoggedIn()) {
                 window.location.href = 'login.html';
@@ -152,7 +158,7 @@
 
             const user = utils.getUser();
             document.getElementById('userGreeting').textContent = user.first_name || user.username;
-            
+
             loadFeaturedProperties();
             loadUserStats();
         });
@@ -190,7 +196,7 @@
                 `).join('');
             } catch (error) {
                 console.error('Error loading properties:', error);
-                document.getElementById('featuredProperties').innerHTML = 
+                document.getElementById('featuredProperties').innerHTML =
                     '<div class="col-12 text-center"><p>Error loading properties.</p></div>';
             }
         }
@@ -200,18 +206,18 @@
                 const reservations = await api.getUserReservations();
                 const statsSection = document.getElementById('userStatsSection');
                 const statsContainer = document.getElementById('userStats');
-                
+
                 if (reservations.length > 0) {
                     statsSection.style.display = 'block';
-                    
-                    const upcoming = reservations.filter(r => 
+
+                    const upcoming = reservations.filter(r =>
                         new Date(r.check_in) > new Date() && r.status === 'confirmed'
                     ).length;
-                    
-                    const completed = reservations.filter(r => 
+
+                    const completed = reservations.filter(r =>
                         r.status === 'completed'
                     ).length;
-                    
+
                     statsContainer.innerHTML = `
                         <div class="col-md-3 text-center">
                             <div class="stat-card">
@@ -245,4 +251,5 @@
         }
     </script>
 </body>
+
 </html>

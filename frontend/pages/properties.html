@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
             min-height: 80vh;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
-        
+
         .property-card {
             transition: all 0.3s ease;
             border: none;
@@ -22,30 +23,30 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             background: white;
         }
-        
+
         .property-card:hover {
             transform: translateY(-10px) scale(1.02);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
-        
+
         .property-image-container {
             height: 250px;
             overflow: hidden;
             position: relative;
             background: #e9ecef;
         }
-        
+
         .property-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
         }
-        
+
         .property-card:hover .property-image {
             transform: scale(1.1);
         }
-        
+
         .property-badge {
             position: absolute;
             top: 15px;
@@ -56,7 +57,7 @@
             border-radius: 20px;
             font-weight: 600;
         }
-        
+
         .property-type-badge {
             position: absolute;
             top: 15px;
@@ -68,7 +69,7 @@
             border-radius: 15px;
             font-weight: 600;
         }
-        
+
         .property-features {
             border-top: 2px solid #f8f9fa;
             border-bottom: 2px solid #f8f9fa;
@@ -77,7 +78,7 @@
             background: #fafafa;
             border-radius: 10px;
         }
-        
+
         .price-tag {
             font-weight: 800;
             background: linear-gradient(135deg, #ff5a5f, #ff7e5f);
@@ -85,13 +86,13 @@
             -webkit-text-fill-color: transparent;
             font-size: 1.5rem;
         }
-        
+
         .location-text {
             color: #666;
             font-size: 0.95rem;
             font-weight: 500;
         }
-        
+
         .description-text {
             color: #555;
             line-height: 1.6;
@@ -101,7 +102,7 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        
+
         .filter-section {
             background: linear-gradient(135deg, #ffffff, #f8f9fa);
             border-radius: 20px;
@@ -110,7 +111,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
-        
+
         .sort-buttons .btn {
             border-radius: 25px;
             padding: 10px 20px;
@@ -118,18 +119,18 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .sort-buttons .btn.active {
             background: linear-gradient(135deg, #667eea, #764ba2);
             border-color: #667eea;
         }
-        
+
         .properties-count {
             color: #2c3e50;
             font-weight: 700;
             font-size: 1.4rem;
         }
-        
+
         .loading-container {
             min-height: 400px;
             display: flex;
@@ -137,7 +138,7 @@
             justify-content: center;
             flex-direction: column;
         }
-        
+
         .spinner-centered {
             width: 60px;
             height: 60px;
@@ -147,12 +148,17 @@
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
-        
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
-        
+
         .empty-state {
             padding: 80px 20px;
             text-align: center;
@@ -160,7 +166,7 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-        
+
         .search-btn {
             background: linear-gradient(135deg, #ff5a5f, #ff7e5f);
             border: none;
@@ -169,7 +175,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .price-input-group::before {
             content: '$';
             position: absolute;
@@ -180,11 +186,11 @@
             font-weight: 600;
             z-index: 3;
         }
-        
+
         .price-input {
             padding-left: 25px !important;
         }
-        
+
         .nav-back-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -194,17 +200,19 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         @media (max-width: 768px) {
             .property-image-container {
                 height: 200px;
             }
+
             .filter-section {
                 padding: 20px 15px;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -226,9 +234,13 @@
                             <i class="fas fa-user-circle me-1"></i> <span class="user-name"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="homepage.html"><i class="fas fa-home me-2"></i> Dashboard</a></li>
-                            <li><a class="dropdown-item" href="reservations.html"><i class="fas fa-calendar me-2"></i> My Reservations</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="homepage.html"><i class="fas fa-home me-2"></i>
+                                    Dashboard</a></li>
+                            <li><a class="dropdown-item" href="reservations.html"><i class="fas fa-calendar me-2"></i>
+                                    My Reservations</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
                         </ul>
                     </div>
@@ -266,13 +278,15 @@
                 <div class="col-md-2">
                     <label class="form-label fw-semibold">💰 Min Price</label>
                     <div class="price-input-group">
-                        <input type="number" class="form-control price-input" id="minPrice" placeholder="200" min="200" value="200">
+                        <input type="number" class="form-control price-input" id="minPrice" placeholder="200" min="200"
+                            value="200">
                     </div>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label fw-semibold">💰 Max Price</label>
                     <div class="price-input-group">
-                        <input type="number" class="form-control price-input" id="maxPrice" placeholder="1000" min="200">
+                        <input type="number" class="form-control price-input" id="maxPrice" placeholder="1000"
+                            min="200">
                     </div>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
@@ -452,7 +466,7 @@
             }
         ];
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Simulate loading delay for better UX
             setTimeout(() => {
                 loadProperties();
@@ -465,7 +479,7 @@
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             const authLinks = document.querySelector('.auth-links');
             const userLinks = document.getElementById('userLinks');
-            
+
             if (user) {
                 authLinks.classList.add('d-none');
                 userLinks.classList.remove('d-none');
@@ -475,35 +489,35 @@
 
         function setupEventListeners() {
             document.getElementById('searchBtn').addEventListener('click', loadProperties);
-            
+
             ['searchLocation', 'minPrice', 'maxPrice'].forEach(id => {
-                document.getElementById(id).addEventListener('keypress', function(e) {
+                document.getElementById(id).addEventListener('keypress', function (e) {
                     if (e.key === 'Enter') loadProperties();
                 });
             });
-            
+
             document.getElementById('propertyType').addEventListener('change', loadProperties);
-            
+
             // Price validation
-            document.getElementById('minPrice').addEventListener('input', function() {
+            document.getElementById('minPrice').addEventListener('input', function () {
                 if (this.value < 200) this.value = 200;
             });
-            
-            document.getElementById('maxPrice').addEventListener('input', function() {
+
+            document.getElementById('maxPrice').addEventListener('input', function () {
                 const minPrice = parseInt(document.getElementById('minPrice').value) || 200;
                 if (this.value && this.value < minPrice) {
                     this.value = minPrice;
                 }
             });
-            
+
             document.querySelectorAll('[data-sort]').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     sortProperties(this.dataset.sort);
                 });
             });
-            
+
             document.getElementById('loadMoreBtn').addEventListener('click', loadMoreProperties);
         }
 
@@ -515,31 +529,31 @@
                 max_price: document.getElementById('maxPrice').value,
                 is_available: true
             };
-            
+
             showLoading(true);
-            
+
             // Simulate API delay for better UX
             setTimeout(async () => {
                 try {
                     // Try to get properties from API first
                     allProperties = await api.getProperties(filters);
-                    
+
                     // If API returns few results, use sample data
                     if (!allProperties || allProperties.length < 5) {
                         allProperties = filterSampleProperties(sampleProperties, filters);
                     }
-                    
+
                     displayedCount = 0;
                     showLoading(false);
                     updatePropertiesCount(allProperties.length);
-                    
+
                     if (allProperties.length === 0) {
                         showNoProperties();
                         return;
                     }
-                    
+
                     sortProperties('newest');
-                    
+
                 } catch (error) {
                     console.error('Error loading properties:', error);
                     // Use sample data if API fails
@@ -549,16 +563,16 @@
                         min_price: document.getElementById('minPrice').value || 200,
                         max_price: document.getElementById('maxPrice').value
                     });
-                    
+
                     displayedCount = 0;
                     showLoading(false);
                     updatePropertiesCount(allProperties.length);
-                    
+
                     if (allProperties.length === 0) {
                         showNoProperties();
                         return;
                     }
-                    
+
                     sortProperties('newest');
                 }
             }, 1000);
@@ -566,30 +580,30 @@
 
         function filterSampleProperties(properties, filters) {
             let filtered = [...properties];
-            
+
             if (filters.property_type) {
                 filtered = filtered.filter(p => p.property_type === filters.property_type);
             }
-            
+
             if (filters.location) {
                 const locationLower = filters.location.toLowerCase();
                 filtered = filtered.filter(p => p.location.toLowerCase().includes(locationLower));
             }
-            
+
             if (filters.min_price) {
                 filtered = filtered.filter(p => p.price_per_night >= parseFloat(filters.min_price));
             }
-            
+
             if (filters.max_price) {
                 filtered = filtered.filter(p => p.price_per_night <= parseFloat(filters.max_price));
             }
-            
+
             return filtered;
         }
 
         function sortProperties(sortType) {
             let sortedProperties = [...allProperties];
-            
+
             switch (sortType) {
                 case 'price-low':
                     sortedProperties.sort((a, b) => a.price_per_night - b.price_per_night);
@@ -602,7 +616,7 @@
                     sortedProperties.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                     break;
             }
-            
+
             allProperties = sortedProperties;
             displayedCount = 0;
             displayProperties();
@@ -611,34 +625,34 @@
         function displayProperties() {
             const container = document.getElementById('propertiesGrid');
             const propertiesToShow = allProperties.slice(displayedCount, displayedCount + propertiesPerPage);
-            
+
             if (displayedCount === 0) {
                 container.innerHTML = '';
             }
-            
+
             propertiesToShow.forEach(property => {
                 const propertyCard = createPropertyCard(property);
                 container.appendChild(propertyCard);
             });
-            
+
             displayedCount += propertiesToShow.length;
-            
+
             const loadMoreContainer = document.getElementById('loadMoreContainer');
             if (displayedCount < allProperties.length) {
                 loadMoreContainer.classList.remove('d-none');
             } else {
                 loadMoreContainer.classList.add('d-none');
             }
-            
+
             container.classList.remove('d-none');
         }
 
         function createPropertyCard(property) {
             const col = document.createElement('div');
             col.className = 'col-lg-4 col-md-6 mb-4';
-            
+
             const imagePath = property.image_url || '../assets/images/properties/default-property.jpg';
-            
+
             col.innerHTML = `
                 <div class="card h-100 property-card">
                     <div class="property-image-container">
@@ -694,7 +708,7 @@
                     </div>
                 </div>
             `;
-            
+
             return col;
         }
 
@@ -707,7 +721,7 @@
             const propertiesGrid = document.getElementById('propertiesGrid');
             const noProperties = document.getElementById('noProperties');
             const loadMoreContainer = document.getElementById('loadMoreContainer');
-            
+
             if (show) {
                 loadingSpinner.classList.remove('d-none');
                 propertiesGrid.classList.add('d-none');
@@ -739,4 +753,5 @@
         }
     </script>
 </body>
+
 </html>

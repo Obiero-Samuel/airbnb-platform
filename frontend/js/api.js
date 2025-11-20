@@ -86,22 +86,22 @@ const api = {
     getSampleProperties(filters = {}) {
         // Sample properties with your downloaded images
         const sampleProperties = [
-                        {
-                            property_id: 0,
-                            title: "Luxury Beach Villa with Ocean View",
-                            location: "Diani Beach, Kenya",
-                            description: "Experience ultimate luxury in this beachfront villa with panoramic ocean views, private pool, and direct beach access. Perfect for families and groups seeking relaxation and adventure.",
-                            price_per_night: 899.99,
-                            property_type: "villa",
-                            bedrooms: 5,
-                            bathrooms: 4,
-                            max_guests: 10,
-                            image_url: "/assets/images/beaches/beach 1.jpg",
-                            is_popular: true,
-                            is_available: true,
-                            created_at: "2024-01-01",
-                            highlights: ["Panoramic Ocean Views", "Private Pool", "Direct Beach Access", "Chef Service"]
-                        },
+            {
+                property_id: 0,
+                title: "Luxury Beach Villa with Ocean View",
+                location: "Diani Beach, Kenya",
+                description: "Experience ultimate luxury in this beachfront villa with panoramic ocean views, private pool, and direct beach access. Perfect for families and groups seeking relaxation and adventure.",
+                price_per_night: 899.99,
+                property_type: "villa",
+                bedrooms: 5,
+                bathrooms: 4,
+                max_guests: 10,
+                image_url: "/assets/images/beaches/beach 1.jpg",
+                is_popular: true,
+                is_available: true,
+                created_at: "2024-01-01",
+                highlights: ["Panoramic Ocean Views", "Private Pool", "Direct Beach Access", "Chef Service"]
+            },
             {
                 property_id: 1,
                 title: "Oceanfront Paradise Villa",
