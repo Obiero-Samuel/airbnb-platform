@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link href="../css/style.css" rel="stylesheet">
     <link href="../css/dashboard.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -16,12 +18,12 @@
             <a class="navbar-brand" href="homepage.html">
                 <i class="fas fa-home"></i> Airbnb System
             </a>
-            
+
             <div class="navbar-nav ms-auto auth-links">
                 <a class="nav-link" href="login.html">Login</a>
                 <a class="nav-link" href="register.html">Register</a>
             </div>
-            
+
             <div class="navbar-nav ms-auto user-links" style="display: none;">
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -29,9 +31,13 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="homepage.html"><i class="fas fa-home"></i> Dashboard</a></li>
-                        <li><a class="dropdown-item" href="reservations.html"><i class="fas fa-calendar"></i> My Reservations</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item logout-btn" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a class="dropdown-item" href="reservations.html"><i class="fas fa-calendar"></i> My
+                                Reservations</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item logout-btn" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -145,7 +151,7 @@
         let displayedCount = 0;
         const propertiesPerPage = 9;
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadProperties();
             setupEventListeners();
         });
@@ -153,10 +159,10 @@
         function setupEventListeners() {
             // Search button
             document.getElementById('searchBtn').addEventListener('click', loadProperties);
-            
+
             // Enter key in search fields
             ['searchLocation', 'minPrice', 'maxPrice'].forEach(id => {
-                document.getElementById(id).addEventListener('keypress', function(e) {
+                document.getElementById(id).addEventListener('keypress', function (e) {
                     if (e.key === 'Enter') loadProperties();
                 });
             });
@@ -166,7 +172,7 @@
 
             // Sort buttons
             document.querySelectorAll('[data-sort]').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     sortProperties(this.dataset.sort);
@@ -191,17 +197,17 @@
             try {
                 allProperties = await api.getProperties(filters);
                 displayedCount = 0;
-                
+
                 showLoading(false);
                 updatePropertiesCount(allProperties.length);
-                
+
                 if (allProperties.length === 0) {
                     showNoProperties();
                     return;
                 }
 
                 sortProperties('newest'); // Default sort
-                
+
             } catch (error) {
                 console.error('Error loading properties:', error);
                 utils.showNotification('Error loading properties', 'error');
@@ -211,8 +217,8 @@
 
         function sortProperties(sortType) {
             let sortedProperties = [...allProperties];
-            
-            switch(sortType) {
+
+            switch (sortType) {
                 case 'price-low':
                     sortedProperties.sort((a, b) => a.price_per_night - b.price_per_night);
                     break;
@@ -224,7 +230,7 @@
                     sortedProperties.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                     break;
             }
-            
+
             allProperties = sortedProperties;
             displayedCount = 0;
             displayProperties();
@@ -233,7 +239,7 @@
         function displayProperties() {
             const container = document.getElementById('propertiesGrid');
             const propertiesToShow = allProperties.slice(displayedCount, displayedCount + propertiesPerPage);
-            
+
             if (displayedCount === 0) {
                 container.innerHTML = '';
             }
@@ -244,7 +250,7 @@
             });
 
             displayedCount += propertiesToShow.length;
-            
+
             // Show/hide load more button
             const loadMoreContainer = document.getElementById('loadMoreContainer');
             if (displayedCount < allProperties.length) {
@@ -259,20 +265,23 @@
         function createPropertyCard(property) {
             const col = document.createElement('div');
             col.className = 'col-md-4 mb-4';
-            
+            // Use local images with fallback
+            const imagePath = property.image_url || '../assets/images/properties/default-property.jpg';
             col.innerHTML = `
                 <div class="card h-100 property-card">
-                    <img src="${property.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" 
-                         class="card-img-top property-image" alt="${property.title}"
-                         style="height: 200px; object-fit: cover;">
-                    ${property.is_popular ? '<span class="position-absolute top-0 end-0 badge bg-warning m-2">Popular</span>' : ''}
-                    <div class="card-body">
+                    <div class="property-image-container" style="height: 200px; overflow: hidden; position: relative;">
+                        <img src="${imagePath}" 
+                             class="card-img-top property-image" alt="${property.title}"
+                             style="height: 100%; width: 100%; object-fit: cover;"
+                             onerror="this.src='../assets/images/properties/default-property.jpg'">
+                        ${property.is_popular ? '<span class="position-absolute top-0 end-0 badge bg-warning m-2">Popular</span>' : ''}
+                    </div>
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${property.title}</h5>
                         <p class="card-text text-muted">
                             <i class="fas fa-map-marker-alt"></i> ${property.location}
                         </p>
-                        <p class="card-text">${property.description ? property.description.substring(0, 100) + '...' : 'No description available'}</p>
-                        
+                        <p class="card-text flex-grow-1">${property.description ? property.description.substring(0, 100) + '...' : 'No description available'}</p>
                         <div class="property-features mb-3">
                             <small class="text-muted">
                                 <i class="fas fa-bed"></i> ${property.bedrooms} bed • 
@@ -280,8 +289,7 @@
                                 <i class="fas fa-users"></i> ${property.max_guests} guests
                             </small>
                         </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
                             <div>
                                 <span class="price h5">${utils.formatCurrency(property.price_per_night)}</span>
                                 <small class="text-muted">/night</small>
@@ -301,7 +309,6 @@
                     </div>
                 </div>
             `;
-            
             return col;
         }
 
@@ -328,4 +335,5 @@
         }
     </script>
 </body>
+
 </html>

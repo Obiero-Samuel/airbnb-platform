@@ -5,15 +5,17 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+
 body {
-    background: linear-gradient(rgba(229,244,251,0.95), rgba(229,244,251,0.95)), url('../assets/images/logo/Login and registration bground.jpg');
+    background: linear-gradient(rgba(229, 244, 251, 0.95), rgba(229, 244, 251, 0.95)), url('../assets/images/logo/Login and registration bground.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
 
-.auth-header, .auth-btn {
+.auth-header,
+.auth-btn {
     background-color: #124071;
     color: #E5F4FB;
 }
