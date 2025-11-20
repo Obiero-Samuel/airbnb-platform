@@ -159,14 +159,13 @@
 
         async function loadFeaturedProperties() {
             try {
-                const properties = await api.getProperties({ is_available: true });
+                // Always use sample data for featured properties
+                const properties = api.getSampleProperties({ is_available: true });
                 const container = document.getElementById('featuredProperties');
-                
                 if (properties.length === 0) {
                     container.innerHTML = '<div class="col-12 text-center"><p>No properties available at the moment.</p></div>';
                     return;
                 }
-
                 // Show first 6 properties
                 container.innerHTML = properties.slice(0, 6).map(property => `
                     <div class="col-md-4 mb-4">
