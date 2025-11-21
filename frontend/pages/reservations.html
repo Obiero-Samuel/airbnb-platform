@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reservations - Airbnb System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <style>
+        .reservations-container {
+            min-height: 80vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px 0;
+        }
+        
+        .reservation-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .reservation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .reservation-image {
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+        
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        
+        .status-confirmed {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .status-pending {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: white;
+        }
+        
+        .status-cancelled {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+            color: white;
+        }
+        
+        .status-completed {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+        
+        .empty-state {
+            padding: 80px 20px;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .loading-container {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .spinner-centered {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff5a5f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="homepage.html">
+                <i class="fas fa-home me-2"></i> Airbnb System
+            </a>
+            <div class="d-flex align-items-center">
+                <a href="homepage.html" class="btn btn-outline-light me-3">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                </a>
+                <div class="navbar-nav auth-links">
+                    <a class="nav-link" href="properties.html">
+                        <i class="fas fa-building me-1"></i> Browse Properties
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Reservations Content -->
+    <section class="reservations-container">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold mb-2">📋 My Reservations</h2>
+                    <p class="text-muted">Manage your upcoming and past stays</p>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingSpinner" class="loading-container">
+                <div class="spinner-centered"></div>
+                <h4 class="text-muted">Loading Your Reservations...</h4>
+                <p class="text-muted mt-2">Please wait while we fetch your booking history</p>
+            </div>
+
+            <!-- Reservations List -->
+            <div id="reservationsList" class="row d-none">
+                <!-- Reservations will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="noReservations" class="empty-state d-none">
+                <i class="fas fa-calendar-times fa-4x text-muted mb-4"></i>
+                <h3 class="mb-3">No Reservations Yet</h3>
+                <p class="text-muted mb-4">You haven't made any reservations yet. Start exploring amazing properties!</p>
+                <a href="properties.html" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i> Browse Properties
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Airbnb System</h5>
+                    <p class="mb-0">Your trusted partner for amazing stays and unforgettable experiences.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; 2024 Airbnb System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        // Sample reservations data (replace with API calls)
+        const sampleReservations = [
+            {
+                reservation_id: 1,
+                property_id: 1,
+                property_title: "Oceanfront Paradise Villa",
+                property_image: "../assets/images/beaches/beach 1.jpg",
+                property_location: "Maldives Beach, Maldives",
+                check_in: "2024-02-15",
+                check_out: "2024-02-20",
+                guests_count: 2,
+                total_price: 2999.95,
+                status: "confirmed",
+                created_at: "2024-01-10"
+            },
+            {
+                reservation_id: 2,
+                property_id: 2,
+                property_title: "Sunset Bay Luxury Condo",
+                property_image: "../assets/images/beaches/beach 2.jpg",
+                property_location: "Santa Monica, California",
+                check_in: "2024-03-01",
+                check_out: "2024-03-05",
+                guests_count: 4,
+                total_price: 1559.96,
+                status: "pending",
+                created_at: "2024-01-12"
+            },
+            {
+                reservation_id: 3,
+                property_id: 5,
+                property_title: "Night Harbor Luxury Condo",
+                property_image: "../assets/images/beaches/beach 4.jpg",
+                property_location: "Miami Beach, Florida",
+                check_in: "2024-01-05",
+                check_out: "2024-01-10",
+                guests_count: 2,
+                total_price: 2299.95,
+                status: "completed",
+                created_at: "2023-12-20"
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!utils.isLoggedIn()) {
+                alert('Please login to view your reservations');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            loadReservations();
+        });
+
+        async function loadReservations() {
+            showLoading(true);
+            
+            // Simulate API delay
+            setTimeout(async () => {
+                try {
+                    // Try to get reservations from API first
+                    let reservations = await api.getUserReservations();
+                    
+                    // If API fails or returns empty, use sample data
+                    if (!reservations || reservations.length === 0) {
+                        reservations = sampleReservations;
+                    }
+                    
+                    showLoading(false);
+                    
+                    if (reservations.length === 0) {
+                        showNoReservations();
+                    } else {
+                        displayReservations(reservations);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading reservations:', error);
+                    // Use sample data if API fails
+                    showLoading(false);
+                    displayReservations(sampleReservations);
+                }
+            }, 1500);
+        }
+
+        function displayReservations(reservations) {
+            const container = document.getElementById('reservationsList');
+            container.innerHTML = '';
+            
+            reservations.forEach(reservation => {
+                const reservationCard = createReservationCard(reservation);
+                container.appendChild(reservationCard);
+            });
+            
+            container.classList.remove('d-none');
+        }
+
+        function createReservationCard(reservation) {
+            const col = document.createElement('div');
+            col.className = 'col-lg-6 mb-4';
+            
+            const statusClass = `status-${reservation.status}`;
+            const statusText = reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1);
+            
+            const imagePath = reservation.property_image || '../assets/images/properties/default-property.jpg';
+            const nights = utils.calculateDays(reservation.check_in, reservation.check_out);
+            
+            col.innerHTML = `
+                <div class="card reservation-card h-100">
+                    <div class="row g-0 h-100">
+                        <div class="col-md-4">
+                            <img src="${imagePath}" 
+                                 class="reservation-image h-100" 
+                                 alt="${reservation.property_title}"
+                                 onerror="this.src='../assets/images/properties/default-property.jpg'">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title fw-bold">${reservation.property_title}</h5>
+                                    <span class="status-badge ${statusClass}">${statusText}</span>
+                                </div>
+                                
+                                <p class="card-text text-muted mb-2">
+                                    <i class="fas fa-map-marker-alt me-1"></i> ${reservation.property_location}
+                                </p>
+                                
+                                <div class="reservation-details mb-3">
+                                    <div class="row small">
+                                        <div class="col-6">
+                                            <strong>Check-in:</strong><br>
+                                            ${utils.formatDate(reservation.check_in)}
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Check-out:</strong><br>
+                                            ${utils.formatDate(reservation.check_out)}
+                                        </div>
+                                    </div>
+                                    <div class="row small mt-2">
+                                        <div class="col-6">
+                                            <strong>Guests:</strong> ${reservation.guests_count}
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Nights:</strong> ${nights}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h4 class="text-primary mb-0">${utils.formatCurrency(reservation.total_price)}</h4>
+                                            <small class="text-muted">Total amount</small>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="viewReservationDetails(${reservation.reservation_id})">
+                                                <i class="fas fa-eye me-1"></i> Details
+                                            </button>
+                                            ${reservation.status === 'confirmed' || reservation.status === 'pending' ? `
+                                                <button class="btn btn-outline-danger btn-sm" onclick="cancelReservation(${reservation.reservation_id})">
+                                                    <i class="fas fa-times me-1"></i> Cancel
+                                                </button>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+
+        function showLoading(show) {
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const reservationsList = document.getElementById('reservationsList');
+            const noReservations = document.getElementById('noReservations');
+            
+            if (show) {
+                loadingSpinner.classList.remove('d-none');
+                reservationsList.classList.add('d-none');
+                noReservations.classList.add('d-none');
+            } else {
+                loadingSpinner.classList.add('d-none');
+            }
+        }
+
+        function showNoReservations() {
+            document.getElementById('noReservations').classList.remove('d-none');
+            document.getElementById('reservationsList').classList.add('d-none');
+        }
+
+        function viewReservationDetails(reservationId) {
+            // Redirect to reservation details page or show modal
+            alert(`Viewing details for reservation #${reservationId}`);
+            // window.location.href = `reservation-details.html?id=${reservationId}`;
+        }
+
+        async function cancelReservation(reservationId) {
+            if (confirm('Are you sure you want to cancel this reservation?')) {
+                try {
+                    await api.cancelReservation(reservationId);
+                    utils.showNotification('Reservation cancelled successfully', 'success');
+                    // Reload reservations
+                    loadReservations();
+                } catch (error) {
+                    utils.showNotification('Error cancelling reservation', 'error');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

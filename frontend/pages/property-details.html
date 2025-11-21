@@ -8,54 +8,210 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
+    <style>
+        .property-hero {
+            height: 60vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .property-image-gallery {
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease;
+        }
+        
+        .property-hero:hover .property-image-gallery {
+            transform: scale(1.05);
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+            color: white;
+        }
+        
+        .feature-highlight {
+            background: linear-gradient(135deg, #ff5a5f, #ff7e5f);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .amenity-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .sticky-booking-card {
+            position: sticky;
+            top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 15px;
+        }
+        
+        .price-tag {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff5a5f, #ff7e5f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-divider {
+            border: none;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+        }
+        
+        .highlight-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .highlight-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff5a5f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .similar-property-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .similar-property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .property-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .feature-item:hover i {
+            color: white !important;
+        }
+        
+        .guarantee-badge {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="homepage.html">
-                <i class="fas fa-home"></i> Airbnb System
+            <a class="navbar-brand fw-bold" href="homepage.html">
+                <i class="fas fa-home me-2"></i> Airbnb System
             </a>
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="properties.html">
-                    <i class="fas fa-arrow-left"></i> Back to Properties
+                    <i class="fas fa-arrow-left me-2"></i> Back to Properties
                 </a>
             </div>
         </div>
     </nav>
 
     <!-- Property Details -->
-    <div class="container py-5" id="propertyDetails">
+    <div class="container-fluid p-0" id="propertyDetails">
         <!-- Loading State -->
-        <div id="loadingState" class="text-center py-5">
-            <div class="loading-spinner"></div>
-            <p class="mt-3">Loading property details...</p>
+        <div id="loadingState" class="text-center py-5" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+            <div>
+                <div class="loading-spinner"></div>
+                <h4 class="mt-4 text-muted">Loading Amazing Property...</h4>
+                <p class="text-muted">Preparing your dream stay experience</p>
+            </div>
         </div>
 
         <!-- Property Content (will be populated by JavaScript) -->
         <div id="propertyContent" class="d-none">
-            <!-- Content goes here -->
+            <!-- Content will be dynamically loaded here -->
         </div>
 
         <!-- Error State -->
-        <div id="errorState" class="text-center py-5 d-none">
-            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-            <h4>Property Not Found</h4>
-            <p class="text-muted">The property you're looking for doesn't exist or has been removed.</p>
-            <a href="properties.html" class="btn btn-primary">Browse Properties</a>
+        <div id="errorState" class="text-center py-5 d-none" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+            <div>
+                <i class="fas fa-exclamation-triangle fa-4x text-warning mb-4"></i>
+                <h3>Property Not Found</h3>
+                <p class="text-muted mb-4">The property you're looking for doesn't exist or has been removed.</p>
+                <a href="properties.html" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search me-2"></i> Browse Amazing Properties
+                </a>
+            </div>
         </div>
     </div>
 
-    <footer class="bg-dark text-white py-4">
+    <footer class="bg-dark text-white py-5 mt-5">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h5>Airbnb System</h5>
-                    <p>Your trusted partner for amazing stays and unforgettable experiences.</p>
+                    <h5 class="fw-bold mb-3">🏠 Airbnb System</h5>
+                    <p class="mb-0">Your trusted partner for amazing stays and unforgettable experiences.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p>&copy; 2024 Airbnb System. All rights reserved.</p>
+                    <p class="mb-0">&copy; 2024 Airbnb System. All rights reserved.</p>
+                    <p class="mb-0 mt-2">Built with ❤️ for travelers worldwide</p>
                 </div>
             </div>
         </div>
@@ -97,120 +253,199 @@
 
         function displayPropertyDetails(property) {
             const content = document.getElementById('propertyContent');
+            
+            // Generate enhanced description based on property type
+            const enhancedDescription = generateEnhancedDescription(property);
+            const amenities = property.amenities ? JSON.parse(property.amenities) : generateDefaultAmenities(property.property_type);
+            const highlights = generatePropertyHighlights(property);
 
             content.innerHTML = `
-                <div class="row">
-                    <div class="col-lg-8">
-                        <!-- Property Images -->
-                        <div class="mb-4">
-                            <img src="${property.image_url || '../assets/images/properties/default-property.jpg'}" 
-                                 class="img-fluid rounded" alt="${property.title}"
-                                 style="width: 100%; height: 400px; object-fit: cover;"
-                                 onerror="this.src='../assets/images/properties/default-property.jpg'">
+                <!-- Hero Section -->
+                <section class="property-hero">
+                    <div class="property-image-gallery" style="background-image: url('${property.image_url || '../assets/images/properties/default-property.jpg'}')"></div>
+                    <div class="hero-overlay">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <h1 class="display-4 fw-bold mb-3">${property.title}</h1>
+                                    <p class="lead mb-4">
+                                        <i class="fas fa-map-marker-alt me-2"></i> 
+                                        ${property.location}
+                                        ${property.is_popular ? '<span class="feature-highlight ms-3">⭐ Most Popular Stay</span>' : ''}
+                                    </p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="guarantee-badge">✨ Verified Property</span>
+                                        <span class="guarantee-badge">🏆 Premium Host</span>
+                                        <span class="guarantee-badge">🔒 Instant Booking</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                </section>
 
-                        <!-- Property Description -->
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h2 class="card-title">${property.title}</h2>
-                                <p class="text-muted">
-                                    <i class="fas fa-map-marker-alt"></i> ${property.location}
-                                    ${property.is_popular ? '<span class="badge bg-warning ms-2">Popular Stay</span>' : ''}
-                                </p>
-                                
-                                <div class="property-features mb-4">
-                                    <div class="row text-center">
-                                        <div class="col-3">
+                <!-- Main Content -->
+                <div class="container py-5">
+                    <div class="row">
+                        <!-- Left Column - Property Details -->
+                        <div class="col-lg-8">
+                            <!-- Property Highlights -->
+                            <div class="row mb-5">
+                                ${highlights.map(highlight => `
+                                    <div class="col-md-6 mb-3">
+                                        <div class="highlight-card p-4 h-100">
+                                            <div class="d-flex align-items-center">
+                                                <div class="amenity-icon me-3">
+                                                    <i class="fas ${highlight.icon} text-white"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1 fw-bold">${highlight.title}</h6>
+                                                    <p class="mb-0 text-muted small">${highlight.description}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <!-- Property Features -->
+                            <div class="card mb-5 border-0 shadow-sm">
+                                <div class="card-body p-4">
+                                    <h3 class="mb-4">🏠 Property Features</h3>
+                                    <div class="property-feature-grid">
+                                        <div class="feature-item">
                                             <i class="fas fa-bed fa-2x text-primary mb-2"></i>
-                                            <p><strong>${property.bedrooms}</strong><br>Bedrooms</p>
+                                            <h5 class="fw-bold">${property.bedrooms}</h5>
+                                            <p class="mb-0 text-muted">Bedrooms</p>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="feature-item">
                                             <i class="fas fa-bath fa-2x text-primary mb-2"></i>
-                                            <p><strong>${property.bathrooms}</strong><br>Bathrooms</p>
+                                            <h5 class="fw-bold">${property.bathrooms}</h5>
+                                            <p class="mb-0 text-muted">Bathrooms</p>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="feature-item">
                                             <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                                            <p><strong>${property.max_guests}</strong><br>Guests</p>
+                                            <h5 class="fw-bold">${property.max_guests}</h5>
+                                            <p class="mb-0 text-muted">Max Guests</p>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="feature-item">
                                             <i class="fas fa-home fa-2x text-primary mb-2"></i>
-                                            <p><strong>${property.property_type}</strong><br>Type</p>
+                                            <h5 class="fw-bold">${property.property_type}</h5>
+                                            <p class="mb-0 text-muted">Property Type</p>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <h4>About this property</h4>
-                                <p class="card-text">${property.description || 'No description available for this property.'}</p>
+                            <!-- Enhanced Description -->
+                            <div class="card mb-5 border-0 shadow-sm">
+                                <div class="card-body p-4">
+                                    <h3 class="mb-4">🌟 About This Amazing Property</h3>
+                                    <p class="lead mb-4">${enhancedDescription}</p>
+                                    
+                                    <!-- Experience Highlights -->
+                                    <div class="row mt-4">
+                                        <div class="col-md-6">
+                                            <h6 class="fw-bold mb-3">🎯 What Makes This Special:</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Premium location with stunning views</li>
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Fully equipped with modern amenities</li>
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Perfect for ${getGuestType(property.max_guests)}</li>
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 24/7 customer support</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 class="fw-bold mb-3">💫 Experience Includes:</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2"><i class="fas fa-star text-warning me-2"></i> Professional cleaning service</li>
+                                                <li class="mb-2"><i class="fas fa-star text-warning me-2"></i> High-speed WiFi included</li>
+                                                <li class="mb-2"><i class="fas fa-star text-warning me-2"></i> Flexible check-in options</li>
+                                                <li class="mb-2"><i class="fas fa-star text-warning me-2"></i> Local recommendations guide</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                <!-- Amenities -->
-                                ${property.amenities && JSON.parse(property.amenities).length > 0 ? `
-                                <div class="mt-4">
-                                    <h5>Amenities</h5>
+                            <!-- Amenities -->
+                            <div class="card mb-5 border-0 shadow-sm">
+                                <div class="card-body p-4">
+                                    <h3 class="mb-4">🛎️ Amenities & Services</h3>
                                     <div class="row">
-                                        ${JSON.parse(property.amenities).map(amenity => `
-                                            <div class="col-md-6">
-                                                <i class="fas fa-check text-success"></i> ${amenity}
+                                        ${amenities.map((amenity, index) => `
+                                            <div class="col-md-6 mb-3">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-3"></i>
+                                                    <span class="fw-medium">${amenity}</span>
+                                                </div>
                                             </div>
                                         `).join('')}
                                     </div>
                                 </div>
-                                ` : ''}
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-lg-4">
-                        <!-- Booking Card -->
-                        <div class="card sticky-top" style="top: 20px;">
-                            <div class="card-body">
-                                <div class="text-center mb-4">
-                                    <span class="price display-4">${utils.formatCurrency(property.price_per_night)}</span>
-                                    <span class="text-muted">/ night</span>
-                                </div>
+                        <!-- Right Column - Booking Card -->
+                        <div class="col-lg-4">
+                            <div class="card sticky-booking-card">
+                                <div class="card-body p-4">
+                                    <div class="text-center mb-4">
+                                        <span class="price-tag">${utils.formatCurrency(property.price_per_night)}</span>
+                                        <span class="text-muted fs-5"> / night</span>
+                                        <p class="text-muted mt-1">+ taxes & fees</p>
+                                    </div>
 
-                                <div class="d-grid gap-2">
-                                    <a href="reservation.html?propertyId=${property.property_id}" 
-                                       class="btn btn-primary btn-lg">
-                                        <i class="fas fa-calendar-check"></i> Book Now
-                                    </a>
-                                    <a href="properties.html" class="btn btn-outline-primary">
-                                        <i class="fas fa-arrow-left"></i> Back to Properties
-                                    </a>
-                                </div>
+                                    <!-- Availability Badge -->
+                                    <div class="text-center mb-4">
+                                        ${property.is_available ?
+                                            '<span class="badge bg-success p-3 fs-6 w-100"><i class="fas fa-calendar-check me-2"></i> Available for Booking</span>' :
+                                            '<span class="badge bg-danger p-3 fs-6 w-100"><i class="fas fa-calendar-times me-2"></i> Currently Unavailable</span>'
+                                        }
+                                    </div>
 
-                                <hr>
+                                    <div class="d-grid gap-3">
+                                        <a href="reservations.html?propertyId=${property.property_id}" 
+                                           class="btn btn-primary btn-lg py-3 fw-bold ${!property.is_available ? 'disabled' : ''}">
+                                            <i class="fas fa-calendar-check me-2"></i> 
+                                            ${property.is_available ? 'Book This Paradise' : 'Not Available'}
+                                        </a>
+                                        <a href="properties.html" class="btn btn-outline-primary py-3">
+                                            <i class="fas fa-search me-2"></i> Explore More Stays
+                                        </a>
+                                    </div>
 
-                                <!-- Host Info -->
-                                <div class="host-info">
-                                    <h6>Hosted by</h6>
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-user-circle fa-2x text-muted me-3"></i>
-                                        <div>
-                                            <strong>${property.host_name || 'Unknown Host'}</strong>
-                                            <br>
-                                            <small class="text-muted">${property.host_email || ''}</small>
+                                    <hr class="my-4">
+
+                                    <!-- Trust Badges -->
+                                    <div class="text-center">
+                                        <div class="row g-2">
+                                            <div class="col-4">
+                                                <i class="fas fa-shield-alt text-success fs-4"></i>
+                                                <small class="d-block mt-1">Secure</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="fas fa-clock text-info fs-4"></i>
+                                                <small class="d-block mt-1">24/7 Support</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <i class="fas fa-star text-warning fs-4"></i>
+                                                <small class="d-block mt-1">Premium</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Availability Status -->
-                                <div class="mt-3">
-                                    ${property.is_available ?
-                    '<span class="badge bg-success"><i class="fas fa-check"></i> Available</span>' :
-                    '<span class="badge bg-danger"><i class="fas fa-times"></i> Not Available</span>'
-                }
-                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Similar Properties -->
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <h4>Similar Properties</h4>
-                        <div id="similarProperties" class="row">
-                            <!-- Similar properties will be loaded here -->
+                    <!-- Similar Properties -->
+                    <hr class="section-divider">
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <h2 class="text-center mb-5">🌴 You Might Also Like</h2>
+                            <div id="similarProperties" class="row">
+                                <!-- Similar properties will be loaded here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -224,6 +459,66 @@
             loadSimilarProperties(property.property_type, property.property_id);
         }
 
+        // Helper functions for enhanced content
+        function generateEnhancedDescription(property) {
+            const baseDescription = property.description || 'A beautiful property offering comfort and luxury.';
+            const enhancements = {
+                villa: `Luxury ${baseDescription} Experience unparalleled comfort with premium amenities and stunning views that will make your stay unforgettable. Perfect for creating lasting memories.`,
+                apartment: `Modern ${baseDescription} Located in the heart of the city with easy access to all attractions. Designed for both comfort and convenience.`,
+                house: `Spacious ${baseDescription} Perfect for family gatherings or group stays with ample space and privacy for everyone.`,
+                condo: `Upscale ${baseDescription} Featuring premium finishes and exclusive building amenities for a sophisticated urban living experience.`,
+                bungalow: `Charming ${baseDescription} Immerse yourself in unique architecture and peaceful surroundings for a truly relaxing getaway.`,
+                studio: `Cozy ${baseDescription} Smartly designed to maximize space while providing all the comforts you need for a perfect stay.`
+            };
+            
+            return enhancements[property.property_type] || baseDescription;
+        }
+
+        function generateDefaultAmenities(propertyType) {
+            const baseAmenities = ['WiFi', 'Air Conditioning', 'Kitchen', 'Free Parking', 'TV', 'Essentials'];
+            const typeSpecific = {
+                villa: ['Private Pool', 'Garden', 'BBQ Area', 'Beach Access'],
+                apartment: ['Elevator', 'Gym Access', 'Concierge', 'City Views'],
+                house: ['Backyard', 'Garage', 'Fireplace', 'Family Friendly'],
+                condo: ['Swimming Pool', 'Security', 'Rooftop Access', 'Modern Appliances'],
+                bungalow: ['Private Entrance', 'Garden', 'Outdoor Seating', 'Natural Surroundings'],
+                studio: ['Smart TV', 'Workspace', 'Compact Kitchen', 'Central Location']
+            };
+            
+            return [...baseAmenities, ...(typeSpecific[propertyType] || [])];
+        }
+
+        function generatePropertyHighlights(property) {
+            return [
+                {
+                    icon: 'fa-calendar-star',
+                    title: 'Instant Confirmation',
+                    description: 'Book now and get immediate confirmation'
+                },
+                {
+                    icon: 'fa-user-shield',
+                    title: 'Premium Host',
+                    description: 'Experienced and verified property host'
+                },
+                {
+                    icon: 'fa-map-marker-alt',
+                    title: 'Prime Location',
+                    description: 'Excellent location with high guest ratings'
+                },
+                {
+                    icon: 'fa-crown',
+                    title: 'Luxury Experience',
+                    description: 'Premium amenities and exceptional service'
+                }
+            ];
+        }
+
+        function getGuestType(maxGuests) {
+            if (maxGuests <= 2) return 'couples and solo travelers';
+            if (maxGuests <= 4) return 'small families and groups';
+            return 'large families and group gatherings';
+        }
+
         async function loadSimilarProperties(propertyType, excludeId) {
             try {
                 const similarProperties = await api.getProperties({
@@ -235,21 +530,34 @@
                 const container = document.getElementById('similarProperties');
 
                 if (filteredProperties.length === 0) {
-                    container.innerHTML = '<div class="col-12 text-center"><p>No similar properties found.</p></div>';
+                    container.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h5>No similar properties found</h5>
+                            <p class="text-muted">Explore our other amazing properties</p>
+                            <a href="properties.html" class="btn btn-primary">Browse All Properties</a>
+                        </div>
+                    `;
                     return;
                 }
 
                 container.innerHTML = filteredProperties.map(property => `
-                    <div class="col-md-4">
-                        <div class="card h-100">
-                            <img src="${property.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'}" 
-                                 class="card-img-top property-image" alt="${property.title}">
+                    <div class="col-md-4 mb-4">
+                        <div class="similar-property-card h-100">
+                            <img src="${property.image_url || '../assets/images/properties/default-property.jpg'}" 
+                                 class="card-img-top" alt="${property.title}" 
+                                 style="height: 200px; object-fit: cover;"
+                                 onerror="this.src='../assets/images/properties/default-property.jpg'">
                             <div class="card-body">
-                                <h6 class="card-title">${property.title}</h6>
-                                <p class="card-text text-muted small">${property.location}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="price">${utils.formatCurrency(property.price_per_night)}/night</span>
-                                    <a href="property-details.html?id=${property.property_id}" class="btn btn-sm btn-outline-primary">View</a>
+                                <h6 class="card-title fw-bold">${property.title}</h6>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="fas fa-map-marker-alt me-1"></i> ${property.location}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="price-tag" style="font-size: 1.2rem;">${utils.formatCurrency(property.price_per_night)}</span>
+                                    <a href="property-details.html?id=${property.property_id}" class="btn btn-sm btn-primary">
+                                        View Details
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -263,7 +571,7 @@
 
         function showError() {
             document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorState').classList.remove('d-none');
         }
     </script>
 </body>
